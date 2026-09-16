@@ -12,10 +12,10 @@ import {
   Instagram,
   Menu,
   PackageOpen,
-  ShieldCheck,
   Sparkles,
   Users,
   X,
+  type LucideIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,18 @@ const gallery = [
   { src: photoTeam.url, alt: "Equipe e participantes reunidos após o treino" },
   { src: photoKick.url, alt: "Participante treinando chute no saco de pancadas" },
   { src: photoFlag.url, alt: "Equipe Jai Rak reunida com a bandeira do Brasil" },
+];
+
+const missionCards: Array<{ icon: LucideIcon; title: string; text: string }> = [
+  { icon: Dumbbell, title: "Esporte", text: "O Muay Thai como ferramenta para desenvolver disciplina, perseverança e confiança." },
+  { icon: HandHeart, title: "Amor", text: "Acolhimento, respeito e cuidado com cada criança e adolescente." },
+  { icon: Sparkles, title: "Fé", text: "Uma missão fundamentada nos ensinamentos de Jesus Cristo e no amor ao próximo." },
+];
+
+const supportCards: Array<{ icon: LucideIcon; title: string; text: string }> = [
+  { icon: HeartHandshake, title: "Apoio financeiro", text: "Contribua para a continuidade das atividades." },
+  { icon: PackageOpen, title: "Doação de materiais", text: "Ajude com equipamentos e recursos necessários ao treinamento." },
+  { icon: Users, title: "Parcerias", text: "Converse conosco sobre outras maneiras de apoiar." },
 ];
 
 function scrollTo(id: string) {
@@ -91,6 +103,7 @@ export function JaiRakSite() {
 
   const contribution = selectedValue === "other" ? customValue : selectedValue;
   const displayContribution = contribution ? `R$ ${Number(contribution).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}` : "defina um valor";
+  const activeGalleryImage = lightboxIndex === null ? undefined : gallery.at(lightboxIndex);
 
   const revealPix = () => {
     setShowPix(true);
@@ -182,15 +195,11 @@ export function JaiRakSite() {
             </div>
           </div>
           <div className="mt-14 grid gap-px overflow-hidden rounded-card border border-hero-foreground/10 bg-hero-foreground/10 md:grid-cols-3">
-            {[
-              [Dumbbell, "Esporte", "O Muay Thai como ferramenta para desenvolver disciplina, perseverança e confiança."],
-              [HandHeart, "Amor", "Acolhimento, respeito e cuidado com cada criança e adolescente."],
-              [Sparkles, "Fé", "Uma missão fundamentada nos ensinamentos de Jesus Cristo e no amor ao próximo."],
-            ].map(([Icon, title, text]) => (
-              <article key={String(title)} className="bg-hero p-7 sm:p-9">
+            {missionCards.map(({ icon: Icon, title, text }) => (
+              <article key={title} className="bg-hero p-7 sm:p-9">
                 <Icon className="h-7 w-7 text-primary" aria-hidden="true" />
-                <h3 className="mt-6 font-display text-2xl uppercase">{String(title)}</h3>
-                <p className="mt-3 leading-7 text-hero-muted">{String(text)}</p>
+                <h3 className="mt-6 font-display text-2xl uppercase">{title}</h3>
+                <p className="mt-3 leading-7 text-hero-muted">{text}</p>
               </article>
             ))}
           </div>
@@ -290,7 +299,7 @@ export function JaiRakSite() {
         <div className="site-container">
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"><SectionIntro eyebrow="Seja um parceiro" title="Juntos, podemos ir mais longe.">O Jai Rak Team acredita na força das parcerias. Se você ou sua empresa deseja contribuir com essa missão por meio de apoio financeiro, equipamentos, materiais ou serviços, entre em contato conosco.</SectionIntro><Button asChild variant="gold" size="xl"><a href={whatsappLinks.partnership} target="_blank" rel="noreferrer">Quero ser parceiro</a></Button></div>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {[[HeartHandshake, "Apoio financeiro", "Contribua para a continuidade das atividades."], [PackageOpen, "Doação de materiais", "Ajude com equipamentos e recursos necessários ao treinamento."], [Users, "Parcerias", "Converse conosco sobre outras maneiras de apoiar."]].map(([Icon, title, text]) => <article key={String(title)} className="support-card"><Icon className="h-7 w-7 text-primary" /><h3 className="mt-5 font-display text-xl uppercase">{String(title)}</h3><p className="mt-2 leading-7 text-muted-foreground">{String(text)}</p></article>)}
+            {supportCards.map(({ icon: Icon, title, text }) => <article key={title} className="support-card"><Icon className="h-7 w-7 text-primary" /><h3 className="mt-5 font-display text-xl uppercase">{title}</h3><p className="mt-2 leading-7 text-muted-foreground">{text}</p></article>)}
           </div>
         </div>
       </section>
@@ -317,11 +326,11 @@ export function JaiRakSite() {
 
       <a href={whatsappLinks.general} target="_blank" rel="noreferrer" className="whatsapp-float" aria-label="Falar com o Jai Rak Team pelo WhatsApp"><MessageIcon /></a>
 
-      {lightboxIndex !== null ? (
+      {lightboxIndex !== null && activeGalleryImage ? (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label="Visualização ampliada da galeria" onClick={() => setLightboxIndex(null)}>
           <Button variant="ghost" size="icon" className="absolute right-4 top-4 z-10 text-hero-foreground hover:bg-hero-foreground/10 hover:text-primary" onClick={() => setLightboxIndex(null)} aria-label="Fechar galeria"><X /></Button>
           <Button variant="ghost" size="icon" className="absolute left-3 top-1/2 z-10 -translate-y-1/2 text-hero-foreground hover:bg-hero-foreground/10 hover:text-primary sm:left-6" onClick={(event) => { event.stopPropagation(); setLightboxIndex((lightboxIndex - 1 + gallery.length) % gallery.length); }} aria-label="Imagem anterior"><ArrowLeft /></Button>
-          <img src={gallery[lightboxIndex].src} alt={gallery[lightboxIndex].alt} className="max-h-[86vh] max-w-[84vw] object-contain" onClick={(event) => event.stopPropagation()} />
+          <img src={activeGalleryImage.src} alt={activeGalleryImage.alt} className="max-h-[86vh] max-w-[84vw] object-contain" onClick={(event) => event.stopPropagation()} />
           <Button variant="ghost" size="icon" className="absolute right-3 top-1/2 z-10 -translate-y-1/2 text-hero-foreground hover:bg-hero-foreground/10 hover:text-primary sm:right-6" onClick={(event) => { event.stopPropagation(); setLightboxIndex((lightboxIndex + 1) % gallery.length); }} aria-label="Próxima imagem"><ArrowRight /></Button>
           <span className="absolute bottom-5 text-xs font-bold text-hero-muted">{lightboxIndex + 1} / {gallery.length}</span>
         </div>

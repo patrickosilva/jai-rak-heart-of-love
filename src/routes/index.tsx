@@ -1,24 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { JaiRakSite } from "@/components/JaiRakSite";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Jai Rak Team | Muito Além do Muay Thai" },
+      { name: "description", content: "Conheça o Jai Rak Team, projeto social que utiliza o Muay Thai, a disciplina e o amor de Jesus para acolher e inspirar crianças e adolescentes. Participe e apoie." },
+      { property: "og:title", content: "Jai Rak Team | Muito Além do Muay Thai" },
+      { property: "og:description", content: "Muay Thai, disciplina e amor de Jesus para acolher e inspirar crianças e adolescentes." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+  }),
+  component: JaiRakSite,
 });
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
